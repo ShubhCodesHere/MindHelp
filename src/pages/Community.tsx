@@ -139,7 +139,7 @@ const Community: React.FC = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'recent' | 'popular')}
-                className="input-field"
+                className="input-field w-32  py-2 px-3 text-sm"
               >
                 <option value="recent">Most Recent</option>
                 <option value="popular">Most Popular</option>

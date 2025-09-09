@@ -19,6 +19,7 @@ const ChatBot: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const quickActions = [
     { text: "I'm feeling anxious", category: 'anxiety' },
@@ -112,6 +113,11 @@ const ChatBot: React.FC = () => {
     setIsTyping(true);
     setShowQuickActions(false);
 
+    // Focus back to input after a short delay
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
+
     // Simulate bot thinking time
     setTimeout(() => {
       const botResponse: ChatMessage = {
@@ -125,6 +131,11 @@ const ChatBot: React.FC = () => {
 
       setMessages(prev => [...prev, botResponse]);
       setIsTyping(false);
+
+      // Focus back to input after bot responds
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 200);
 
       // Follow up with suggestions after certain responses
       if (textToSend.toLowerCase().includes('help') || textToSend.toLowerCase().includes('support')) {
@@ -152,33 +163,33 @@ const ChatBot: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 h-screen">
         {/* Header */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-4 sm:mb-6">
           <div className="flex justify-center items-center space-x-2 mb-2">
-            <SparklesIcon className="w-6 h-6 text-primary-600" />
-            <h1 className="text-2xl font-bold text-gray-900">AI Mental Health Assistant</h1>
+            <SparklesIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600" />
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">AI Mental Health Assistant</h1>
           </div>
-          <p className="text-gray-600">Safe, confidential, and available 24/7</p>
+          <p className="text-sm sm:text-base text-gray-600">Safe, confidential, and available 24/7</p>
         </div>
 
         {/* Chat Container */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-[600px] flex flex-col">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col" style={{ height: 'calc(100vh - 200px)' }}>
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.isBot ? 'justify-start' : 'justify-end'}`}
               >
                 <div
-                  className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                  className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 rounded-lg ${
                     message.isBot
                       ? 'bg-gray-100 text-gray-900'
                       : 'bg-primary-600 text-white'
                   }`}
                 >
-                  <p className="text-sm">{message.content}</p>
+                  <p className="text-xs sm:text-sm">{message.content}</p>
                   <p className={`text-xs mt-1 ${
                     message.isBot ? 'text-gray-500' : 'text-primary-100'
                   }`}>
@@ -191,7 +202,7 @@ const ChatBot: React.FC = () => {
             {/* Typing Indicator */}
             {isTyping && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 rounded-lg px-4 py-2">
+                <div className="bg-gray-100 rounded-lg px-3 sm:px-4 py-2">
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -206,14 +217,14 @@ const ChatBot: React.FC = () => {
 
           {/* Quick Actions */}
           {showQuickActions && (
-            <div className="px-6 py-4 border-t border-gray-200">
-              <p className="text-sm text-gray-600 mb-3">Quick actions:</p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-gray-200">
+              <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">Quick actions:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                 {quickActions.map((action, index) => (
                   <button
                     key={index}
                     onClick={() => sendMessage(action.text)}
-                    className="text-left p-2 text-sm bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="text-left p-2 text-xs sm:text-sm bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors touch-target"
                   >
                     {action.text}
                   </button>
@@ -223,30 +234,32 @@ const ChatBot: React.FC = () => {
           )}
 
           {/* Message Input */}
-          <div className="p-6 border-t border-gray-200">
-            <div className="flex space-x-4">
+          <div className="p-3 sm:p-6 border-t border-gray-200">
+            <div className="flex space-x-2 sm:space-x-4">
               <input
                 type="text"
+                ref={inputRef}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message here..."
-                className="flex-1 input-field"
+                className="flex-1 input-field text-sm sm:text-base"
                 disabled={isTyping}
+                autoFocus
               />
               <button
                 onClick={() => sendMessage()}
                 disabled={!newMessage.trim() || isTyping}
-                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed px-3 sm:px-4 touch-target"
               >
-                <PaperAirplaneIcon className="w-5 h-5" />
+                <PaperAirplaneIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
           </div>
         </div>
 
         {/* Disclaimer */}
-        <div className="mt-6 text-center">
+        <div className="mt-4 sm:mt-6 text-center px-2">
           <p className="text-xs text-gray-500">
             This AI assistant provides support and information but is not a replacement for professional mental health care.
             If you're in crisis, please contact emergency services or a mental health professional immediately.
