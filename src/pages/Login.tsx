@@ -52,16 +52,16 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center">
-            <div className="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center">
-              <HeartIcon className="w-8 h-8 text-white" />
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-600 rounded-full flex items-center justify-center">
+              <HeartIcon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-4 sm:mt-6 text-2xl sm:text-3xl font-extrabold text-gray-900">
             Welcome to MindLink
           </h2>
           <p className="mt-2 text-sm text-gray-600">
@@ -79,7 +79,7 @@ const Login: React.FC = () => {
               key={demo.role}
               type="button"
               onClick={() => fillDemoCredentials(demo.role as User['role'])}
-              className="text-xs px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors capitalize"
+              className="text-xs px-2 sm:px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors capitalize touch-target"
             >
               {demo.role}
             </button>
@@ -87,14 +87,14 @@ const Login: React.FC = () => {
         </div>
 
         {/* Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="bg-white p-8 rounded-xl shadow-lg">
+        <form className="mt-6 sm:mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="bg-white p-4 sm:p-6 lg:p-8 rounded-xl shadow-lg">
             {/* Toggle Login/Register */}
             <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
               <button
                 type="button"
                 onClick={() => setIsLogin(true)}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                className={`flex-1 py-2 px-2 sm:px-4 rounded-md text-sm font-medium transition-colors touch-target ${
                   isLogin ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'
                 }`}
               >
@@ -103,7 +103,7 @@ const Login: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsLogin(false)}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                className={`flex-1 py-2 px-2 sm:px-4 rounded-md text-sm font-medium transition-colors touch-target ${
                   !isLogin ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'
                 }`}
               >
@@ -204,7 +204,7 @@ const Login: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed touch-target min-h-[44px]"
               >
                 {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
               </button>
