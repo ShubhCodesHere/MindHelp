@@ -1,9 +1,5 @@
 # MindLink - Digital Mental Health Platform 🧠💙
 
-## 🏆 Hackathon-Winning Mental Health App
-
-**MindLink** is a comprehensive digital mental health platform designed specifically for students. It combines AI-powered support, peer-to-peer assistance, professional mental health services, and gamified engagement to create a supportive ecosystem for student mental wellness.
-
 ## 🌟 Core Features
 
 ### 1. **AI Mental Health Assistant** 🤖
@@ -205,9 +201,7 @@
 
 ## 📈 Business Model
 
-- **Freemium Model**: Basic features free, premium features paid
 - **University Partnerships**: Institutional licensing
-- **Professional Subscriptions**: Mental health professionals pay for platform access
 - **Token Economy**: Small transaction fees on token exchanges
 - **Analytics Dashboard**: Universities pay for aggregate mental health insights
 
