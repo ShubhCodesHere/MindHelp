@@ -23,6 +23,8 @@ const PeerSupport: React.FC = () => {
       case 'helper':
       case 'psychiatrist':
         return 'be-helper';
+      case 'guest':
+        return 'find-help'; // Guests should explore finding help
       default:
         return 'find-help';
     }
@@ -35,6 +37,13 @@ const PeerSupport: React.FC = () => {
     const tabs = [];
     
     if (user?.role === 'student') {
+      tabs.push(
+        { id: 'find-help', label: 'Get Support', icon: UserGroupIcon },
+        { id: 'sessions', label: 'My Sessions', icon: CalendarIcon }
+      );
+    }
+    
+    if (user?.role === 'guest') {
       tabs.push(
         { id: 'find-help', label: 'Get Support', icon: UserGroupIcon },
         { id: 'sessions', label: 'My Sessions', icon: CalendarIcon }
@@ -54,14 +63,14 @@ const PeerSupport: React.FC = () => {
   const availableTabs = getAvailableTabs();
 
   const availableHelpers = [
-    { id: '1', name: 'Sarah M.', rating: 4.8, helpCount: 45, isOnline: true, specialties: ['Anxiety', 'Study Stress'] },
-    { id: '2', name: 'Alex K.', rating: 4.9, helpCount: 62, isOnline: true, specialties: ['Depression', 'Social Anxiety'] },
-    { id: '3', name: 'Jordan P.', rating: 4.7, helpCount: 38, isOnline: false, specialties: ['Sleep Issues', 'Time Management'] },
+    { id: '1', name: 'Priya M.', rating: 4.8, helpCount: 45, isOnline: true, specialties: ['Anxiety', 'Study Stress'] },
+    { id: '2', name: 'Arjun K.', rating: 4.9, helpCount: 62, isOnline: true, specialties: ['Depression', 'Social Anxiety'] },
+    { id: '3', name: 'Kavya P.', rating: 4.7, helpCount: 38, isOnline: false, specialties: ['Sleep Issues', 'Time Management'] },
   ];
 
   const professionals = [
-    { id: '1', name: 'Dr. Emily Chen', title: 'Clinical Psychologist', rating: 4.9, nextAvailable: 'Today 3:00 PM' },
-    { id: '2', name: 'Dr. Michael Rodriguez', title: 'Psychiatrist', rating: 4.8, nextAvailable: 'Tomorrow 10:00 AM' },
+    { id: '1', name: 'Dr. Ananya Sharma', title: 'Clinical Psychologist', rating: 4.9, nextAvailable: 'Today 3:00 PM' },
+    { id: '2', name: 'Dr. Arjun Verma', title: 'Psychiatrist', rating: 4.8, nextAvailable: 'Tomorrow 10:00 AM' },
     { id: '3', name: 'Dr. Aisha Patel', title: 'Counselor', rating: 4.9, nextAvailable: 'Today 5:00 PM' },
   ];
 
@@ -74,11 +83,13 @@ const PeerSupport: React.FC = () => {
             {user?.role === 'student' && 'Support Network'}
             {user?.role === 'helper' && 'Helper Dashboard'}
             {user?.role === 'psychiatrist' && 'Professional Dashboard'}
+            {user?.role === 'guest' && 'Explore Support Options'}
           </h1>
           <p className="text-gray-600 mt-2">
             {user?.role === 'student' && 'Connect with peer helpers and mental health professionals'}
             {user?.role === 'helper' && 'Help fellow students and manage your support sessions'}
             {user?.role === 'psychiatrist' && 'Manage patient appointments and high-priority cases'}
+            {user?.role === 'guest' && 'Discover how our peer support network can help you'}
           </p>
         </div>
 
@@ -210,9 +221,175 @@ const PeerSupport: React.FC = () => {
 
         {/* Other tabs content would go here */}
         {activeTab === 'sessions' && (
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Your Sessions</h3>
-            <p className="text-gray-600">Session management interface would go here</p>
+          <div className="py-8">
+            <h3 className="text-lg font-medium text-gray-900 mb-6 text-center">Your Sessions</h3>
+            {user?.role === 'guest' ? (
+              <div className="max-w-4xl mx-auto">
+                {(() => {
+                  // Check if guest has taken assessment and has low wellness score
+                  const wellnessScore = localStorage.getItem(`wellnessScore_${user.email}`);
+                  const sessionKey = `userSessions_${user.email}`;
+                  const userSessions = JSON.parse(localStorage.getItem(sessionKey) || localStorage.getItem('userSessions') || '[]');
+                  const hasLowWellnessScore = wellnessScore && parseInt(wellnessScore) < 30;
+                  
+                  if (hasLowWellnessScore && userSessions.length > 0) {
+                    return (
+                      <div className="space-y-6">
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                          <h4 className="font-semibold text-yellow-800 mb-2">🩺 Priority Sessions Scheduled</h4>
+                          <p className="text-yellow-700 text-sm">
+                            Based on your wellness assessment score ({wellnessScore}%), we've automatically scheduled priority support sessions for you.
+                          </p>
+                        </div>
+                        
+                        <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
+                          {userSessions.map((session: any) => (
+                            <div key={session.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                              <div className="flex items-start justify-between mb-4">
+                                <div>
+                                  <h4 className="font-semibold text-gray-900">{session.type}</h4>
+                                  <p className="text-sm text-gray-600">with {session.with}</p>
+                                </div>
+                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                  session.priority === 'immediate' 
+                                    ? 'bg-red-100 text-red-800' 
+                                    : session.priority === 'urgent'
+                                    ? 'bg-orange-100 text-orange-800'
+                                    : 'bg-blue-100 text-blue-800'
+                                }`}>
+                                  {session.priority === 'immediate' ? 'IMMEDIATE' : 
+                                   session.priority === 'urgent' ? 'URGENT' : 'SCHEDULED'}
+                                </span>
+                              </div>
+                              
+                              <div className="space-y-2 mb-4">
+                                <div className="flex items-center text-sm text-gray-600">
+                                  <CalendarIcon className="w-4 h-4 mr-2" />
+                                  {session.time}
+                                </div>
+                                <div className="flex items-center text-sm text-gray-600">
+                                  <ClockIcon className="w-4 h-4 mr-2" />
+                                  {session.status}
+                                </div>
+                              </div>
+                              
+                              <div className="bg-gray-50 rounded-lg p-3">
+                                <p className="text-xs text-gray-600 font-medium">Reason:</p>
+                                <p className="text-sm text-gray-800">{session.reason}</p>
+                              </div>
+                              
+                              <div className="mt-4 flex space-x-3">
+                                <button className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                                  Join Session
+                                </button>
+                                <button className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
+                                  Reschedule
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+                          <h5 className="font-semibold text-blue-800 mb-2">💡 What to Expect</h5>
+                          <ul className="text-blue-700 text-sm space-y-1">
+                            <li>• Your therapist will reach out 15 minutes before the session</li>
+                            <li>• Sessions are conducted via secure video call</li>
+                            <li>• All conversations are completely confidential</li>
+                            <li>• You can reschedule if needed at least 2 hours in advance</li>
+                          </ul>
+                        </div>
+                      </div>
+                    );
+                  } else if (wellnessScore) {
+                    // Dynamic messaging based on wellness score
+                    const scoreNumber = parseInt(wellnessScore, 10);
+                    const getWellnessMessage = () => {
+                      if (scoreNumber >= 75) {
+                        return {
+                          bgColor: "bg-green-50 border-green-200",
+                          textColor: "text-green-800",
+                          subTextColor: "text-green-700",
+                          icon: "✅",
+                          title: "Great Wellness Score!",
+                          message: "Keep up the excellent work!",
+                          action: "No immediate sessions needed, but you can always book a session if you need support."
+                        };
+                      } else if (scoreNumber >= 50) {
+                        return {
+                          bgColor: "bg-yellow-50 border-yellow-200",
+                          textColor: "text-yellow-800",
+                          subTextColor: "text-yellow-700",
+                          icon: "👍",
+                          title: "Good Wellness Score",
+                          message: "You're doing well, but there's room for improvement.",
+                          action: "Consider exploring our wellness resources and peer support."
+                        };
+                      } else if (scoreNumber >= 30) {
+                        return {
+                          bgColor: "bg-orange-50 border-orange-200",
+                          textColor: "text-orange-800",
+                          subTextColor: "text-orange-700",
+                          icon: "💪",
+                          title: "Focus on Improvement",
+                          message: "Your wellness needs attention.",
+                          action: "We recommend connecting with our peer support community."
+                        };
+                      } else {
+                        return {
+                          bgColor: "bg-red-50 border-red-200",
+                          textColor: "text-red-800",
+                          subTextColor: "text-red-700",
+                          icon: "🤗",
+                          title: "Support Available",
+                          message: "We're here to help you feel better.",
+                          action: "Professional support sessions have been scheduled for you."
+                        };
+                      }
+                    };
+
+                    const message = getWellnessMessage();
+                    
+                    return (
+                      <div className="max-w-md mx-auto text-center">
+                        <div className={`border rounded-lg p-6 ${message.bgColor}`}>
+                          <h4 className={`font-semibold mb-2 ${message.textColor}`}>
+                            {message.icon} {message.title}
+                          </h4>
+                          <p className={`text-sm mb-4 ${message.subTextColor}`}>
+                            Your wellness score is {wellnessScore}% - {message.message}
+                          </p>
+                          <p className={`text-sm ${message.subTextColor}`}>
+                            {message.action}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className="max-w-md mx-auto text-center">
+                        <p className="text-gray-600 mb-4">Complete your wellness assessment to start booking sessions</p>
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <p className="text-blue-700 text-sm">
+                            Once you take the wellness assessment, you'll be able to:
+                          </p>
+                          <ul className="text-blue-600 text-sm mt-2 space-y-1">
+                            <li>• Book sessions with peer helpers</li>
+                            <li>• Schedule professional consultations</li>
+                            <li>• Track your session history</li>
+                            <li>• Access personalized support</li>
+                          </ul>
+                        </div>
+                      </div>
+                    );
+                  }
+                })()}
+              </div>
+            ) : (
+              <div className="text-center">
+                <p className="text-gray-600">Session management interface would go here</p>
+              </div>
+            )}
           </div>
         )}
 

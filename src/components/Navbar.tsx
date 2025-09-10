@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import GoogleTranslate from './GoogleTranslate';
 import { 
   HomeIcon, 
   ChatBubbleLeftRightIcon, 
@@ -58,6 +59,16 @@ const Navbar: React.FC = () => {
         );
         break;
       
+      case 'guest':
+        // Guests get limited features to explore the platform
+        baseNavigation.push(
+          { name: 'AI Assistant', href: '/chatbot', icon: ChatBubbleLeftRightIcon },
+          { name: 'Peer Support', href: '/peer-support', icon: UserGroupIcon },
+          { name: 'Wellness Hub', href: '/wellness', icon: HeartIcon },
+          { name: 'Community', href: '/community', icon: UserGroupIcon }
+        );
+        break;
+      
       default:
         // Fallback for unknown roles
         baseNavigation.push(
@@ -108,6 +119,9 @@ const Navbar: React.FC = () => {
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
+            {/* Google Translate */}
+            <GoogleTranslate />
+
             {/* Notifications */}
             <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">
               <BellIcon className="w-5 h-5" />

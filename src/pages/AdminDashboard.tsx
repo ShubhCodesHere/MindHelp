@@ -16,9 +16,9 @@ const AdminDashboard: React.FC = () => {
   ];
 
   const recentSessions = [
-    { id: '1', student: 'Anonymous User', helper: 'Sarah M.', status: 'active', priority: 'high', duration: '25 min' },
+    { id: '1', student: 'Anonymous User', helper: 'Priya M.', status: 'active', priority: 'high', duration: '25 min' },
     { id: '2', student: 'Anonymous User', helper: 'Dr. Chen', status: 'completed', priority: 'medium', duration: '45 min' },
-    { id: '3', student: 'Anonymous User', helper: 'Alex K.', status: 'pending', priority: 'high', duration: '-' },
+    { id: '3', student: 'Anonymous User', helper: 'Arjun K.', status: 'pending', priority: 'high', duration: '-' },
     { id: '4', student: 'Anonymous User', helper: 'Jordan P.', status: 'active', priority: 'low', duration: '15 min' },
   ];
 

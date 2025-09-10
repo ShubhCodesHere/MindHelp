@@ -46,6 +46,12 @@ const Profile: React.FC = () => {
           { id: '4', title: 'Community Builder', description: 'Grew platform to 1000+ users', icon: '🏗️', earned: true },
           { id: '5', title: 'Innovation Leader', description: 'Implemented new platform features', icon: '💡', earned: false },
         ];
+      case 'guest':
+        return [
+          { id: '1', title: 'Welcome Visitor', description: 'Started exploring MindHelp', icon: '👋', earned: true },
+          { id: '2', title: 'Assessment Complete', description: 'Completed wellness assessment', icon: '📋', earned: false },
+          { id: '3', title: 'Explorer', description: 'Visited all available sections', icon: '🗺️', earned: false },
+        ];
       default:
         return [
           { id: '1', title: 'Getting Started', description: 'Created your account', icon: '🌟', earned: true },
@@ -84,6 +90,13 @@ const Profile: React.FC = () => {
           { label: 'Users Managed', value: '1,247', icon: StarIcon },
           { label: 'Crisis Interventions', value: '89', icon: TrophyIcon },
           { label: 'System Alerts', value: '2', icon: HeartIcon },
+        ];
+      case 'guest':
+        return [
+          { label: 'Sessions Completed', value: '0', icon: UserGroupIcon },
+          { label: 'Tokens Earned', value: '0', icon: TrophyIcon },
+          { label: 'Days Active', value: '0', icon: HeartIcon },
+          { label: 'Assessment Status', value: 'Pending', icon: StarIcon },
         ];
       default:
         return [

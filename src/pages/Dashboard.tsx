@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import WellnessVideos from '../components/WellnessVideos';
 import { 
   ChatBubbleLeftRightIcon, 
   UserGroupIcon, 
@@ -27,7 +28,7 @@ const Dashboard: React.FC = () => {
   // Get stored wellness score
   const getWellnessScore = () => {
     if (user) {
-      const storedScore = localStorage.getItem(`wellnessScore_${user.id}`);
+      const storedScore = localStorage.getItem(`wellnessScore_${user.email}`);
       return storedScore ? parseInt(storedScore) : 78; // Default to 78 if no assessment taken
     }
     return 78;
@@ -35,7 +36,7 @@ const Dashboard: React.FC = () => {
 
   const getAssessmentDate = () => {
     if (user) {
-      const assessmentDate = localStorage.getItem(`assessmentDate_${user.id}`);
+      const assessmentDate = localStorage.getItem(`assessmentDate_${user.email}`);
       if (assessmentDate) {
         const date = new Date(assessmentDate);
         return date.toLocaleDateString();
@@ -178,6 +179,42 @@ const Dashboard: React.FC = () => {
           },
         ];
 
+      case 'guest':
+        return [
+          {
+            title: 'Take Wellness Assessment',
+            description: 'Complete our mental health assessment to get started',
+            href: '/assessment',
+            icon: ClockIcon,
+            color: 'bg-indigo-500',
+            urgent: true,
+          },
+          {
+            title: 'Connect with Peer',
+            description: 'Get anonymous support from trained helpers',
+            href: '/peer-support',
+            icon: UserGroupIcon,
+            color: 'bg-green-500',
+            urgent: false,
+          },
+          {
+            title: 'Explore Wellness Content',
+            description: 'Browse guided meditations and breathing exercises',
+            href: '/wellness',
+            icon: HeartIcon,
+            color: 'bg-pink-500',
+            urgent: false,
+          },
+          {
+            title: 'Community Forum',
+            description: 'Read and explore community discussions',
+            href: '/community',
+            icon: ChatBubbleLeftRightIcon,
+            color: 'bg-blue-500',
+            urgent: false,
+          },
+        ];
+
       default:
         return [
           {
@@ -201,7 +238,7 @@ const Dashboard: React.FC = () => {
   ];
 
   const upcomingSessions = [
-    { type: 'Video Call', with: 'Dr. Sarah Johnson', time: 'Today, 3:00 PM', status: 'confirmed' },
+    { type: 'Video Call', with: 'Dr. Kavya Patel', time: 'Today, 3:00 PM', status: 'confirmed' },
     { type: 'Peer Chat', with: 'Anonymous Helper', time: 'Tomorrow, 10:00 AM', status: 'pending' },
   ];
 
@@ -225,6 +262,7 @@ const Dashboard: React.FC = () => {
             {user?.role === 'helper' && "Ready to help fellow students? Check your pending support requests."}
             {user?.role === 'psychiatrist' && "Your patients are waiting. Review high-priority cases and appointments."}
             {user?.role === 'admin' && "Monitor platform health and manage critical alerts."}
+            {user?.role === 'guest' && "Welcome to MindHelp! Complete your wellness assessment to get personalized support."}
           </p>
         </div>
 
@@ -428,10 +466,74 @@ const Dashboard: React.FC = () => {
               </div>
             </>
           )}
+
+          {/* Guest-specific stats - all show 0 */}
+          {user?.role === 'guest' && (
+            <>
+              <div className="card">
+                <div className="flex items-center">
+                  <div className="p-3 bg-yellow-100 rounded-lg">
+                    <TrophyIcon className="w-6 h-6 text-yellow-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm text-gray-600">Tokens Earned</p>
+                    <p className="text-2xl font-bold text-gray-900">0</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card">
+                <div className="flex items-center">
+                  <div className="p-3 bg-blue-100 rounded-lg">
+                    <UserGroupIcon className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm text-gray-600">Sessions Completed</p>
+                    <p className="text-2xl font-bold text-gray-900">0</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card">
+                <div className="flex items-center">
+                  <div className="p-3 bg-green-100 rounded-lg">
+                    <CalendarIcon className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm text-gray-600">Days Active</p>
+                    <p className="text-2xl font-bold text-gray-900">0</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card">
+                <div className="flex items-center">
+                  <div className="p-3 bg-purple-100 rounded-lg">
+                    <HeartIcon className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm text-gray-600">
+                      Wellness Score {assessmentDate && `(${assessmentDate})`}
+                    </p>
+                    {localStorage.getItem(`wellnessScore_${user.email}`) ? (
+                      <p className={`text-2xl font-bold ${
+                        wellnessScore >= 75 ? 'text-green-600' :
+                        wellnessScore >= 50 ? 'text-yellow-600' :
+                        wellnessScore >= 30 ? 'text-orange-600' :
+                        'text-red-600'
+                      }`}>{wellnessScore}%</p>
+                    ) : (
+                      <p className="text-2xl font-bold text-gray-600">Not assessed</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Scheduled Sessions Alert for Low Wellness Score */}
-        {user?.role === 'student' && wellnessScore < 30 && scheduledSessions.length > 0 && (
+        {(user?.role === 'student' || user?.role === 'guest') && wellnessScore < 30 && scheduledSessions.length > 0 && (
           <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 mb-8">
             <div className="flex items-start">
               <ExclamationTriangleIcon className="w-6 h-6 text-orange-600 mr-3 mt-1" />
@@ -591,6 +693,13 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {/* Wellness Videos - Show for low wellness scores */}
+            {wellnessScore < 30 && (
+              <div className="mt-8">
+                <WellnessVideos />
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}

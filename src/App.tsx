@@ -44,9 +44,9 @@ const AppRoutes: React.FC = () => {
     return <LoadingSpinner />;
   }
 
-  // Check if student needs to take assessment
-  const needsAssessment = user?.role === 'student' && 
-    !localStorage.getItem(`wellnessScore_${user.id}`) &&
+  // Check if guest user needs to take assessment (only guests, not students)
+  const needsAssessment = user?.role === 'guest' && 
+    !localStorage.getItem(`wellnessScore_${user.email}`) &&
     window.location.pathname !== '/assessment' &&
     window.location.pathname !== '/login';
 
@@ -62,22 +62,22 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         } />
         <Route path="/chatbot" element={
-          <ProtectedRoute allowedRoles={['student']}>
+          <ProtectedRoute allowedRoles={['student', 'guest']}>
             <ChatBot />
           </ProtectedRoute>
         } />
         <Route path="/peer-support" element={
-          <ProtectedRoute allowedRoles={['student', 'helper', 'psychiatrist']}>
+          <ProtectedRoute allowedRoles={['student', 'helper', 'psychiatrist', 'guest']}>
             <PeerSupport />
           </ProtectedRoute>
         } />
         <Route path="/wellness" element={
-          <ProtectedRoute allowedRoles={['student']}>
+          <ProtectedRoute allowedRoles={['student', 'guest']}>
             <WellnessHub />
           </ProtectedRoute>
         } />
         <Route path="/community" element={
-          <ProtectedRoute allowedRoles={['student', 'helper']}>
+          <ProtectedRoute allowedRoles={['student', 'helper', 'guest']}>
             <Community />
           </ProtectedRoute>
         } />
@@ -92,7 +92,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         } />
         <Route path="/assessment" element={
-          <ProtectedRoute allowedRoles={['student']}>
+          <ProtectedRoute allowedRoles={['student', 'guest']}>
             <Assessment />
           </ProtectedRoute>
         } />

@@ -13,7 +13,7 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { login, register } = useAuth();
+  const { login, register, guestLogin } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +29,19 @@ const Login: React.FC = () => {
     } catch (error) {
       console.error('Authentication error:', error);
       setError('Authentication failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGuestLogin = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await guestLogin('Guest User');
+    } catch (error) {
+      console.error('Guest login error:', error);
+      setError('Guest login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -85,6 +98,25 @@ const Login: React.FC = () => {
               {demo.role}
             </button>
           ))}
+        </div>
+
+        {/* Guest Login Section */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Try as Guest 🌟
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Get started immediately without creating an account. Take our wellness assessment and explore the platform!
+            </p>
+            <button
+              type="button"
+              onClick={handleGuestLogin}
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              Continue as Guest
+            </button>
+          </div>
         </div>
 
         {/* Form */}

@@ -5,6 +5,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string, role: User['role']) => Promise<void>;
   register: (name: string, email: string, password: string, role: User['role']) => Promise<void>;
+  guestLogin: (name: string) => Promise<void>;
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
   loading: boolean;
@@ -83,6 +84,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const guestLogin = async (name: string) => {
+    setLoading(true);
+    try {
+      // Create a guest user with a unique identifier
+      const guestId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const guestUser: User = {
+        id: guestId,
+        email: `${guestId}@guest.mindhelp.com`,
+        name: name || 'Guest User',
+        role: 'guest',
+        tokens: 0, // Guests don't need tokens
+        isOnline: true,
+        isGuest: true,
+      };
+      
+      setUser(guestUser);
+      localStorage.setItem('mindlink_user', JSON.stringify(guestUser));
+    } catch (error) {
+      console.error('Guest login failed:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('mindlink_user');
@@ -100,6 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     login,
     register,
+    guestLogin,
     logout,
     updateUser,
     loading,

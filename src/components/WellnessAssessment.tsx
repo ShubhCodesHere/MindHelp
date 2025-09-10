@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { 
   HeartIcon, 
   CheckCircleIcon,
@@ -19,6 +20,7 @@ interface Answer {
 }
 
 const WellnessAssessment: React.FC<{ onComplete: (score: number) => void }> = ({ onComplete }) => {
+  const { user } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -98,8 +100,10 @@ const WellnessAssessment: React.FC<{ onComplete: (score: number) => void }> = ({
       setScore(finalScore);
       setIsCompleted(true);
       
-      // Auto-schedule session if score is below 30%
-      if (finalScore < 30) {
+      // Auto-schedule session based on score severity
+      if (finalScore <= 10) {
+        scheduleImmediateSession();
+      } else if (finalScore < 30) {
         scheduleUrgentSession();
       }
       
@@ -108,21 +112,56 @@ const WellnessAssessment: React.FC<{ onComplete: (score: number) => void }> = ({
   };
 
   const scheduleUrgentSession = () => {
-    // In a real app, this would make an API call to schedule a session
+    // Schedule same-day session for wellness scores < 30%
+    const timeSlots = ['4:00 PM', '5:30 PM', '7:00 PM', '8:30 PM'];
+    const availableTime = timeSlots[Math.floor(Math.random() * timeSlots.length)];
+    
     const urgentSession = {
       id: `urgent-${Date.now()}`,
-      type: 'Professional Consultation',
-      with: 'Dr. Sarah Johnson',
-      time: 'Tomorrow, 10:00 AM',
+      type: 'Priority Consultation',
+      with: 'Dr. Shreya Sharma',
+      time: `Today, ${availableTime}`,
       status: 'auto-scheduled',
       priority: 'urgent',
-      reason: 'Low wellness score detected'
+      reason: 'Low wellness score detected - same day priority session'
     };
 
-    // Store in localStorage for demo purposes
-    const existingSessions = JSON.parse(localStorage.getItem('userSessions') || '[]');
+    // Store in localStorage for demo purposes (user-specific)
+    const sessionKey = `userSessions_${user?.email || 'guest'}`;
+    const existingSessions = JSON.parse(localStorage.getItem(sessionKey) || '[]');
     existingSessions.unshift(urgentSession);
+    localStorage.setItem(sessionKey, JSON.stringify(existingSessions));
+    
+    // Also store in general userSessions for backward compatibility
     localStorage.setItem('userSessions', JSON.stringify(existingSessions));
+  };
+
+  const scheduleImmediateSession = () => {
+    // Schedule immediate session for critical wellness scores
+    const timeSlots = ['2:00 PM', '3:30 PM', '5:00 PM', '6:30 PM'];
+    const availableTime = timeSlots[Math.floor(Math.random() * timeSlots.length)];
+    
+    const immediateSession = {
+      id: `immediate-${Date.now()}`,
+      type: 'Emergency Consultation',
+      with: 'Dr. Priya Gupta',
+      time: `Today, ${availableTime}`,
+      status: 'auto-scheduled',
+      priority: 'immediate',
+      reason: 'Critical wellness score - immediate attention required'
+    };
+
+    // Store in localStorage for demo purposes (user-specific)
+    const sessionKey = `userSessions_${user?.email || 'guest'}`;
+    const existingSessions = JSON.parse(localStorage.getItem(sessionKey) || '[]');
+    existingSessions.unshift(immediateSession);
+    localStorage.setItem(sessionKey, JSON.stringify(existingSessions));
+    
+    // Also store in general userSessions for backward compatibility
+    localStorage.setItem('userSessions', JSON.stringify(existingSessions));
+
+    // Also show immediate help resources
+    localStorage.setItem('showEmergencyResources', 'true');
   };
 
   const getScoreColor = (score: number) => {
@@ -205,7 +244,7 @@ const WellnessAssessment: React.FC<{ onComplete: (score: number) => void }> = ({
                 <div className="text-left">
                   <h4 className="font-semibold text-red-800 mb-1">Urgent Session Scheduled</h4>
                   <p className="text-red-700 text-sm">
-                    We've automatically scheduled a consultation with Dr. Sarah Johnson for tomorrow at 10:00 AM. 
+                    We've automatically scheduled a consultation with Dr. Kavya Sharma for tomorrow at 10:00 AM. 
                     You can view this in your dashboard under "Upcoming Sessions".
                   </p>
                 </div>

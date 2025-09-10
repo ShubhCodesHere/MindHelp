@@ -2,13 +2,14 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'student' | 'helper' | 'psychiatrist' | 'admin';
+  role: 'student' | 'helper' | 'psychiatrist' | 'admin' | 'guest';
   avatar?: string;
   tokens: number;
   rating?: number;
   isOnline?: boolean;
   specialization?: string; // for psychiatrists
   helpCount?: number; // for helpers
+  isGuest?: boolean; // for guest users
 }
 
 export interface ChatMessage {

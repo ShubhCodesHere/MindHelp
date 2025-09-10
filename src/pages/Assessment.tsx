@@ -13,8 +13,8 @@ const Assessment: React.FC = () => {
     // Save the wellness score to the user's profile
     if (user) {
       // In a real app, this would be an API call
-      localStorage.setItem(`wellnessScore_${user.id}`, score.toString());
-      localStorage.setItem(`assessmentDate_${user.id}`, new Date().toISOString());
+      localStorage.setItem(`wellnessScore_${user.email}`, score.toString());
+      localStorage.setItem(`assessmentDate_${user.email}`, new Date().toISOString());
     }
     
     // Navigate to dashboard after a short delay

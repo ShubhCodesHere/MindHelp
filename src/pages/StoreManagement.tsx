@@ -611,16 +611,16 @@ const StoreManagement: React.FC = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {[
-                    { id: '#1001', customer: 'John Doe', product: 'MindHelp Wellness T-Shirt', amount: 5000, status: 'Delivered', date: '2025-09-08' },
-                    { id: '#1002', customer: 'Jane Smith', product: 'Daily Wellness Journal', amount: 3500, status: 'Processing', date: '2025-09-09' },
-                    { id: '#1003', customer: 'Mike Johnson', product: 'Meditation Cushion Set', amount: 8500, status: 'Shipped', date: '2025-09-09' },
-                    { id: '#1004', customer: 'Sarah Wilson', product: 'Aromatherapy Essential Oil Kit', amount: 4200, status: 'Delivered', date: '2025-09-07' },
-                    { id: '#1005', customer: 'David Brown', product: 'Weighted Blanket Therapy', amount: 9500, status: 'Processing', date: '2025-09-10' },
-                    { id: '#1006', customer: 'Emily Davis', product: 'Yoga Mat Premium', amount: 6200, status: 'Shipped', date: '2025-09-08' },
-                    { id: '#1007', customer: 'Alex Thompson', product: 'Fitness Tracker Band', amount: 12500, status: 'Delivered', date: '2025-09-06' },
-                    { id: '#1008', customer: 'Lisa Garcia', product: 'MindHelp Hoodie', amount: 7200, status: 'Processing', date: '2025-09-10' },
-                    { id: '#1009', customer: 'Chris Lee', product: 'Sleep Sound Machine', amount: 5500, status: 'Shipped', date: '2025-09-09' },
-                    { id: '#1010', customer: 'Maria Rodriguez', product: 'Herbal Tea Sampler', amount: 3600, status: 'Delivered', date: '2025-09-08' },
+                    { id: '#1001', customer: 'Raj Gupta', product: 'MindHelp Wellness T-Shirt', amount: 5000, status: 'Delivered', date: '2025-09-08' },
+                    { id: '#1002', customer: 'Pooja Verma', product: 'Daily Wellness Journal', amount: 3500, status: 'Processing', date: '2025-09-09' },
+                    { id: '#1003', customer: 'Rohit Sharma', product: 'Meditation Cushion Set', amount: 8500, status: 'Shipped', date: '2025-09-09' },
+                    { id: '#1004', customer: 'Priya Singh', product: 'Aromatherapy Essential Oil Kit', amount: 4200, status: 'Delivered', date: '2025-09-07' },
+                    { id: '#1005', customer: 'Vikram Gupta', product: 'Weighted Blanket Therapy', amount: 9500, status: 'Processing', date: '2025-09-10' },
+                    { id: '#1006', customer: 'Anita Patel', product: 'Yoga Mat Premium', amount: 6200, status: 'Shipped', date: '2025-09-08' },
+                    { id: '#1007', customer: 'Kiran Shah', product: 'Fitness Tracker Band', amount: 12500, status: 'Delivered', date: '2025-09-06' },
+                    { id: '#1008', customer: 'Meera Agarwal', product: 'MindHelp Hoodie', amount: 7200, status: 'Processing', date: '2025-09-10' },
+                    { id: '#1009', customer: 'Ravi Kumar', product: 'Sleep Sound Machine', amount: 5500, status: 'Shipped', date: '2025-09-09' },
+                    { id: '#1010', customer: 'Neha Joshi', product: 'Herbal Tea Sampler', amount: 3600, status: 'Delivered', date: '2025-09-08' },
                   ].map((order) => (
                     <tr key={order.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
