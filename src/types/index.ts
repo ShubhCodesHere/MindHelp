@@ -102,3 +102,14 @@ export interface Analytics {
   stressLevels: { label: string; value: number }[];
   helpRequests: { date: string; count: number }[];
 }
+
+export interface StoreItem {
+  id: string;
+  name: string;
+  description: string;
+  cost: number;
+  category: 'merch' | 'books' | 'accessories' | 'experiences' | 'wellness' | 'fitness';
+  image: string;
+  inStock: boolean;
+  featured?: boolean;
+}

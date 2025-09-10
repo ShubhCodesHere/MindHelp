@@ -26,7 +26,8 @@ const Login: React.FC = () => {
       } else {
         await register(name, email, password, role);
       }
-    } catch (err) {
+    } catch (error) {
+      console.error('Authentication error:', error);
       setError('Authentication failed. Please try again.');
     } finally {
       setLoading(false);

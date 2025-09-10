@@ -15,7 +15,7 @@ const Community: React.FC = () => {
 
   const tags = ['all', 'anxiety', 'stress', 'sleep', 'study-tips', 'motivation', 'depression', 'social'];
 
-  const posts: Post[] = [
+  const initialPosts: Post[] = [
     {
       id: '1',
       authorId: 'user1',
@@ -75,6 +75,67 @@ const Community: React.FC = () => {
       isAnonymous: true,
     },
   ];
+
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [userVotes, setUserVotes] = useState<Record<string, 'upvote' | 'downvote' | null>>({});
+
+  // Voting functionality with one vote per user per post
+  const handleVote = (postId: string, voteType: 'upvote' | 'downvote') => {
+    const currentVote = userVotes[postId];
+    
+    // If user already voted the same way, remove the vote
+    if (currentVote === voteType) {
+      // Remove vote
+      setPosts(prevPosts => 
+        prevPosts.map(post => {
+          if (post.id === postId) {
+            if (voteType === 'upvote') {
+              return { ...post, upvotes: post.upvotes - 1 };
+            } else {
+              return { ...post, downvotes: post.downvotes - 1 };
+            }
+          }
+          return post;
+        })
+      );
+      setUserVotes(prev => ({ ...prev, [postId]: null }));
+      return;
+    }
+    
+    // If user voted opposite way, switch the vote
+    if (currentVote && currentVote !== voteType) {
+      setPosts(prevPosts => 
+        prevPosts.map(post => {
+          if (post.id === postId) {
+            if (voteType === 'upvote') {
+              // Remove downvote, add upvote
+              return { ...post, upvotes: post.upvotes + 1, downvotes: post.downvotes - 1 };
+            } else {
+              // Remove upvote, add downvote
+              return { ...post, upvotes: post.upvotes - 1, downvotes: post.downvotes + 1 };
+            }
+          }
+          return post;
+        })
+      );
+    } else {
+      // First time voting
+      setPosts(prevPosts => 
+        prevPosts.map(post => {
+          if (post.id === postId) {
+            if (voteType === 'upvote') {
+              return { ...post, upvotes: post.upvotes + 1 };
+            } else {
+              return { ...post, downvotes: post.downvotes + 1 };
+            }
+          }
+          return post;
+        })
+      );
+    }
+    
+    setUserVotes(prev => ({ ...prev, [postId]: voteType }));
+  };
 
   const filteredPosts = posts.filter(post => 
     selectedTag === 'all' || post.tags.includes(selectedTag)
@@ -155,13 +216,27 @@ const Community: React.FC = () => {
               <div className="flex space-x-4">
                 {/* Voting */}
                 <div className="flex flex-col items-center space-y-2">
-                  <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                  <button 
+                    className={`p-2 rounded-lg transition-colors ${
+                      userVotes[post.id] === 'upvote'
+                        ? 'text-green-600 bg-green-50 border border-green-200'
+                        : 'text-gray-400 hover:text-green-600 hover:bg-green-50'
+                    }`}
+                    onClick={() => handleVote(post.id, 'upvote')}
+                  >
                     <ArrowUpIcon className="w-5 h-5" />
                   </button>
                   <span className="font-medium text-gray-900">
                     {post.upvotes - post.downvotes}
                   </span>
-                  <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                  <button 
+                    className={`p-2 rounded-lg transition-colors ${
+                      userVotes[post.id] === 'downvote'
+                        ? 'text-red-600 bg-red-50 border border-red-200'
+                        : 'text-gray-400 hover:text-red-600 hover:bg-red-50'
+                    }`}
+                    onClick={() => handleVote(post.id, 'downvote')}
+                  >
                     <ArrowDownIcon className="w-5 h-5" />
                   </button>
                 </div>

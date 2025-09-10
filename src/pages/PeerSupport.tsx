@@ -14,7 +14,44 @@ import {
 
 const PeerSupport: React.FC = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'find-help' | 'sessions' | 'be-helper'>('find-help');
+  
+  // Set default tab based on user role
+  const getDefaultTab = () => {
+    switch (user?.role) {
+      case 'student':
+        return 'find-help';
+      case 'helper':
+      case 'psychiatrist':
+        return 'be-helper';
+      default:
+        return 'find-help';
+    }
+  };
+
+  const [activeTab, setActiveTab] = useState<'find-help' | 'sessions' | 'be-helper'>(getDefaultTab());
+
+  // Get available tabs based on user role
+  const getAvailableTabs = () => {
+    const tabs = [];
+    
+    if (user?.role === 'student') {
+      tabs.push(
+        { id: 'find-help', label: 'Get Support', icon: UserGroupIcon },
+        { id: 'sessions', label: 'My Sessions', icon: CalendarIcon }
+      );
+    }
+    
+    if (user?.role === 'helper' || user?.role === 'psychiatrist') {
+      tabs.push(
+        { id: 'be-helper', label: user?.role === 'psychiatrist' ? 'Patient Management' : 'Help Others', icon: HeartIcon },
+        { id: 'sessions', label: 'My Sessions', icon: CalendarIcon }
+      );
+    }
+    
+    return tabs;
+  };
+
+  const availableTabs = getAvailableTabs();
 
   const availableHelpers = [
     { id: '1', name: 'Sarah M.', rating: 4.8, helpCount: 45, isOnline: true, specialties: ['Anxiety', 'Study Stress'] },
@@ -31,43 +68,37 @@ const PeerSupport: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
+        {/* Dynamic Header based on role */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Support Network</h1>
-          <p className="text-gray-600 mt-2">Connect with peer helpers and mental health professionals</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {user?.role === 'student' && 'Support Network'}
+            {user?.role === 'helper' && 'Helper Dashboard'}
+            {user?.role === 'psychiatrist' && 'Professional Dashboard'}
+          </h1>
+          <p className="text-gray-600 mt-2">
+            {user?.role === 'student' && 'Connect with peer helpers and mental health professionals'}
+            {user?.role === 'helper' && 'Help fellow students and manage your support sessions'}
+            {user?.role === 'psychiatrist' && 'Manage patient appointments and high-priority cases'}
+          </p>
         </div>
 
-        {/* Tabs */}
+        {/* Dynamic Tabs */}
         <div className="flex bg-white rounded-lg p-1 mb-8 shadow-sm border border-gray-200">
-          <button
-            onClick={() => setActiveTab('find-help')}
-            className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'find-help' ? 'bg-primary-100 text-primary-700' : 'text-gray-600'
-            }`}
-          >
-            <UserGroupIcon className="w-5 h-5 inline mr-2" />
-            Get Support
-          </button>
-          <button
-            onClick={() => setActiveTab('sessions')}
-            className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'sessions' ? 'bg-primary-100 text-primary-700' : 'text-gray-600'
-            }`}
-          >
-            <CalendarIcon className="w-5 h-5 inline mr-2" />
-            My Sessions
-          </button>
-          {(user?.role === 'helper' || user?.role === 'psychiatrist') && (
-            <button
-              onClick={() => setActiveTab('be-helper')}
-              className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'be-helper' ? 'bg-primary-100 text-primary-700' : 'text-gray-600'
-              }`}
-            >
-              <HeartIcon className="w-5 h-5 inline mr-2" />
-              Help Others
-            </button>
-          )}
+          {availableTabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as 'find-help' | 'sessions' | 'be-helper')}
+                className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === tab.id ? 'bg-primary-100 text-primary-700' : 'text-gray-600'
+                }`}
+              >
+                <Icon className="w-5 h-5 inline mr-2" />
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Get Support Tab */}
@@ -186,9 +217,76 @@ const PeerSupport: React.FC = () => {
         )}
 
         {activeTab === 'be-helper' && (
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Helper Dashboard</h3>
-            <p className="text-gray-600">Helper interface and queue management would go here</p>
+          <div className="space-y-6">
+            {user?.role === 'helper' && (
+              <>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                  <h3 className="text-blue-800 font-semibold mb-2">Helper Queue</h3>
+                  <p className="text-blue-700 text-sm mb-4">Students waiting for support:</p>
+                  <div className="space-y-3">
+                    <div className="bg-white p-4 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">Anonymous Student</p>
+                          <p className="text-sm text-gray-600">Anxiety about upcoming exams</p>
+                          <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Medium Priority</span>
+                        </div>
+                        <button className="btn-primary">Accept</button>
+                      </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">Anonymous Student</p>
+                          <p className="text-sm text-gray-600">Feeling overwhelmed with coursework</p>
+                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Low Priority</span>
+                        </div>
+                        <button className="btn-primary">Accept</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+            
+            {user?.role === 'psychiatrist' && (
+              <>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                  <h3 className="text-red-800 font-semibold mb-2">High Priority Cases</h3>
+                  <p className="text-red-700 text-sm mb-4">Urgent cases requiring immediate attention:</p>
+                  <div className="space-y-3">
+                    <div className="bg-white p-4 rounded-lg border-l-4 border-red-500">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">Patient #1234</p>
+                          <p className="text-sm text-gray-600">PHQ-9 Score: 18 (Severe Depression)</p>
+                          <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">Urgent</span>
+                        </div>
+                        <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                          Immediate Session
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
+                  <h3 className="text-purple-800 font-semibold mb-2">Scheduled Appointments</h3>
+                  <div className="space-y-3">
+                    <div className="bg-white p-4 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">Patient #5678</p>
+                          <p className="text-sm text-gray-600">Follow-up session - Anxiety treatment</p>
+                          <p className="text-xs text-gray-500">Today 3:00 PM</p>
+                        </div>
+                        <button className="btn-primary">Join Session</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

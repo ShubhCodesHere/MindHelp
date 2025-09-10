@@ -8,20 +8,67 @@ import {
   HeartIcon, 
   UserIcon,
   Cog6ToothIcon,
-  BellIcon
+  BellIcon,
+  ShoppingBagIcon
 } from '@heroicons/react/24/outline';
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-    { name: 'AI Assistant', href: '/chatbot', icon: ChatBubbleLeftRightIcon },
-    { name: 'Peer Support', href: '/peer-support', icon: UserGroupIcon },
-    { name: 'Wellness Hub', href: '/wellness', icon: HeartIcon },
-    { name: 'Community', href: '/community', icon: UserGroupIcon },
-  ];
+  // Filter navigation based on user role
+  const getNavigationForUser = () => {
+    const baseNavigation = [
+      { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
+    ];
+
+    // Role-specific navigation
+    switch (user?.role) {
+      case 'student':
+        // Students get all features
+        baseNavigation.push(
+          { name: 'AI Assistant', href: '/chatbot', icon: ChatBubbleLeftRightIcon },
+          { name: 'Peer Support', href: '/peer-support', icon: UserGroupIcon },
+          { name: 'Wellness Hub', href: '/wellness', icon: HeartIcon },
+          { name: 'Community', href: '/community', icon: UserGroupIcon },
+          { name: 'Store', href: '/store', icon: ShoppingBagIcon }
+        );
+        break;
+      
+      case 'helper':
+        // Helpers can provide support and engage with community
+        baseNavigation.push(
+          { name: 'Peer Support', href: '/peer-support', icon: UserGroupIcon },
+          { name: 'Community', href: '/community', icon: UserGroupIcon },
+          { name: 'Store', href: '/store', icon: ShoppingBagIcon }
+        );
+        break;
+      
+      case 'psychiatrist':
+        // Psychiatrists only need professional support features
+        baseNavigation.push(
+          { name: 'Peer Support', href: '/peer-support', icon: UserGroupIcon }
+        );
+        break;
+      
+      case 'admin':
+        // Admins get store management features
+        baseNavigation.push(
+          { name: 'Store Management', href: '/store-management', icon: ShoppingBagIcon }
+        );
+        break;
+      
+      default:
+        // Fallback for unknown roles
+        baseNavigation.push(
+          { name: 'Peer Support', href: '/peer-support', icon: UserGroupIcon }
+        );
+    }
+
+    return baseNavigation;
+  };
+
+  const navigation = getNavigationForUser();
 
   return (
     <nav className="bg-white shadow-lg border-b border-gray-200">
@@ -66,10 +113,12 @@ const Navbar: React.FC = () => {
               <BellIcon className="w-5 h-5" />
             </button>
 
-            {/* Tokens Display */}
-            <div className="hidden sm:flex items-center space-x-2 bg-yellow-50 px-3 py-1 rounded-full">
-              <span className="text-yellow-600 text-sm font-medium">🪙 {user?.tokens || 0}</span>
-            </div>
+            {/* Tokens Display - Only for students and helpers */}
+            {user?.role && ['student', 'helper'].includes(user.role) && (
+              <div className="hidden sm:flex items-center space-x-2 bg-yellow-50 px-3 py-1 rounded-full">
+                <span className="text-yellow-600 text-sm font-medium">🪙 {user?.tokens || 0}</span>
+              </div>
+            )}
 
             {/* Profile Dropdown */}
             <div className="relative">

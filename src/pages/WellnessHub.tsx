@@ -5,6 +5,18 @@ import type { WellnessContent } from '../types';
 const WellnessHub: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
+  const [selectedVideo, setSelectedVideo] = useState<WellnessContent | null>(null);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+
+  const playVideo = (content: WellnessContent) => {
+    setSelectedVideo(content);
+    setShowVideoModal(true);
+  };
+
+  const closeVideoModal = () => {
+    setShowVideoModal(false);
+    setSelectedVideo(null);
+  };
 
   const categories = [
     { id: 'all', name: 'All Content', color: 'bg-gray-500' },
@@ -18,10 +30,10 @@ const WellnessHub: React.FC = () => {
   const wellnessContent: WellnessContent[] = [
     {
       id: '1',
-      title: '5-Minute Breathing Exercise',
+      title: '5-Minute Breathing Exercise for Anxiety',
       description: 'Quick breathing technique to reduce anxiety and stress',
-      type: 'audio',
-      url: '#',
+      type: 'video',
+      url: 'https://www.youtube.com/embed/tybOi4hjZFQ',
       duration: 300,
       tags: ['anxiety', 'stress', 'quick'],
       category: 'breathing',
@@ -29,10 +41,10 @@ const WellnessHub: React.FC = () => {
     },
     {
       id: '2',
-      title: 'Guided Sleep Meditation',
+      title: 'Guided Sleep Meditation - Body Scan',
       description: 'Peaceful meditation to help you fall asleep naturally',
-      type: 'audio',
-      url: '#',
+      type: 'video',
+      url: 'https://www.youtube.com/embed/1ZYbU82GVz4',
       duration: 1200,
       tags: ['sleep', 'relaxation', 'night'],
       category: 'sleep',
@@ -40,10 +52,10 @@ const WellnessHub: React.FC = () => {
     },
     {
       id: '3',
-      title: 'Study Stress Relief',
+      title: 'Study Stress Relief - Quick Relaxation',
       description: 'Techniques to manage exam anxiety and study pressure',
       type: 'video',
-      url: '#',
+      url: 'https://www.youtube.com/embed/DbDoBzGY3vo',
       duration: 480,
       tags: ['study', 'exam', 'stress'],
       category: 'stress',
@@ -51,10 +63,10 @@ const WellnessHub: React.FC = () => {
     },
     {
       id: '4',
-      title: 'Morning Motivation',
+      title: 'Morning Motivation and Energy',
       description: 'Start your day with positive energy and motivation',
       type: 'video',
-      url: '#',
+      url: 'https://www.youtube.com/embed/ZXsQAXx_ao0',
       duration: 360,
       tags: ['morning', 'energy', 'positivity'],
       category: 'motivation',
@@ -62,13 +74,24 @@ const WellnessHub: React.FC = () => {
     },
     {
       id: '5',
-      title: 'Mindful Meditation for Beginners',
+      title: '10-Minute Mindfulness Meditation',
       description: 'Learn the basics of mindfulness meditation',
       type: 'video',
-      url: '#',
+      url: 'https://www.youtube.com/embed/ssss7V1_eyA',
       duration: 600,
       tags: ['mindfulness', 'beginner', 'meditation'],
       category: 'meditation',
+      language: 'en',
+    },
+    {
+      id: '6',
+      title: 'Box Breathing for Stress Relief',
+      description: '4-4-4-4 breathing technique for instant calm',
+      type: 'video',
+      url: 'https://www.youtube.com/embed/FJJazKtH_9I',
+      duration: 240,
+      tags: ['breathing', 'stress', 'technique'],
+      category: 'breathing',
       language: 'en',
     },
   ];
@@ -174,7 +197,10 @@ const WellnessHub: React.FC = () => {
                 </div>
 
                 {/* Action Button */}
-                <button className="w-full btn-primary">
+                <button 
+                  className="w-full btn-primary"
+                  onClick={() => playVideo(content)}
+                >
                   <PlayIcon className="w-4 h-4 inline mr-2" />
                   {content.type === 'video' ? 'Watch Now' : 'Listen Now'}
                 </button>
@@ -227,6 +253,34 @@ const WellnessHub: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Video Modal */}
+      {showVideoModal && selectedVideo && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-gray-900">{selectedVideo.title}</h3>
+              <button 
+                onClick={closeVideoModal}
+                className="text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            <div className="aspect-video">
+              <iframe
+                src={selectedVideo.url}
+                title={selectedVideo.title}
+                className="w-full h-full rounded-lg"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+            <p className="text-gray-600 mt-4">{selectedVideo.description}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
