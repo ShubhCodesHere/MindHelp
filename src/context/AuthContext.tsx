@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // Check for existing user session
-    const savedUser = localStorage.getItem('mindlink_user');
+    const savedUser = localStorage.getItem('mindhelp_user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
       
       setUser(mockUser);
-      localStorage.setItem('mindlink_user', JSON.stringify(mockUser));
+      localStorage.setItem('mindhelp_user', JSON.stringify(mockUser));
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
       
       setUser(mockUser);
-      localStorage.setItem('mindlink_user', JSON.stringify(mockUser));
+      localStorage.setItem('mindhelp_user', JSON.stringify(mockUser));
     } catch (error) {
       console.error('Registration failed:', error);
       throw error;
@@ -100,7 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
       
       setUser(guestUser);
-      localStorage.setItem('mindlink_user', JSON.stringify(guestUser));
+      localStorage.setItem('mindhelp_user', JSON.stringify(guestUser));
     } catch (error) {
       console.error('Guest login failed:', error);
       throw error;
@@ -111,14 +111,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('mindlink_user');
+    localStorage.removeItem('mindhelp_user');
   };
 
   const updateUser = (updates: Partial<User>) => {
     if (user) {
       const updatedUser = { ...user, ...updates };
       setUser(updatedUser);
-      localStorage.setItem('mindlink_user', JSON.stringify(updatedUser));
+      localStorage.setItem('mindhelp_user', JSON.stringify(updatedUser));
     }
   };
 

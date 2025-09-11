@@ -91,7 +91,7 @@ const Navbar: React.FC = () => {
               <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
                 <HeartIcon className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">MindLink</span>
+              <span className="text-xl font-bold text-gray-900">MindHelp</span>
             </Link>
           </div>
 

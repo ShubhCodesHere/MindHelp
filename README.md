@@ -1,4 +1,4 @@
-# MindLink - Digital Mental Health Platform 🧠💙
+# MindHelp - Digital Mental Health Platform 🧠💙
 
 ## 🌟 Core Features
 

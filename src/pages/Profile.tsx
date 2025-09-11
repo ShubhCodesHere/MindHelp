@@ -18,7 +18,7 @@ const Profile: React.FC = () => {
         return [
           { id: '1', title: 'First Step', description: 'Completed your first session', icon: '🌟', earned: true },
           { id: '2', title: 'Wellness Warrior', description: 'Completed 20 wellness activities', icon: '�', earned: false },
-          { id: '3', title: 'Consistent User', description: 'Used MindLink for 7 days straight', icon: '📅', earned: true },
+          { id: '3', title: 'Consistent User', description: 'Used MindHelp for 7 days straight', icon: '📅', earned: true },
           { id: '4', title: 'Community Contributor', description: 'Made 5 helpful posts', icon: '💬', earned: false },
           { id: '5', title: 'Progress Tracker', description: 'Logged mood for 30 days', icon: '📊', earned: false },
         ];

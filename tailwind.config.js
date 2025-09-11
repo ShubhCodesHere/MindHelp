@@ -21,7 +21,7 @@ export default {
           800: '#075985',
           900: '#0c4a6e',
         },
-        mindlink: {
+        mindhelp: {
           50: '#f8fafc',
           100: '#f1f5f9',
           200: '#e2e8f0',

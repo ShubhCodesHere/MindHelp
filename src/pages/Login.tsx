@@ -76,7 +76,7 @@ const Login: React.FC = () => {
             </div>
           </div>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Welcome to MindLink
+            Welcome to MindHelp
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Your digital mental health companion
