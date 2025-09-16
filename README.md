@@ -65,7 +65,7 @@
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd MedHelp
+   cd MindHelp
    ```
 
 2. **Install dependencies**
